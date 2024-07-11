@@ -315,6 +315,9 @@ func (e *Executor) fee(numOfInputs, numOfOutputs int64) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	log.Debug().Msgf("Fee: %+v", recommendedFee)
+	log.Debug().Msgf("Economy: %d", recommendedFee.EconomyFee)
 	return (numOfInputs*int64(INPUT_SIZE) + numOfOutputs*int64(OUTPUT_SIZE)) * recommendedFee.EconomyFee, nil
 }
 
