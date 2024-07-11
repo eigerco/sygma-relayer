@@ -157,6 +157,9 @@ func (e *Executor) executeResourceProps(props []*BtcTransferProposal, resource c
 		if err != nil {
 			return err
 		}
+
+		log.Info().Msgf("Signing hash: %s", hex.EncodeToString(txHash))
+
 		p.Go(func() error {
 			msg := new(big.Int)
 			msg.SetBytes(txHash[:])
