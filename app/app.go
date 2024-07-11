@@ -146,11 +146,11 @@ func Run() error {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(keyshare.Threshold)
-	fmt.Println(keyshare.Key.ID)
-	fmt.Println(keyshare.Key.ChainKey)
+	log.Info().Msg(string(keyshare.Threshold))
+	log.Info().Msg(string(keyshare.Key.ID))
+	log.Info().Msg(string(keyshare.Key.ChainKey))
 	for _, peer := range keyshare.Peers {
-		fmt.Println(peer)
+		log.Info().Msg(peer.String())
 	}
 
 	// wait until executions are done and then stop further executions before exiting
