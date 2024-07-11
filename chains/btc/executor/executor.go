@@ -151,8 +151,18 @@ func (e *Executor) executeResourceProps(props []*BtcTransferProposal, resource c
 	prevOutputFetcher := txscript.NewMultiPrevOutFetcher(prevOuts)
 	sigHashes := txscript.NewTxSigHashes(tx, prevOutputFetcher)
 
+	var buf buffer.Buffer
+	err = tx.Serialize(&buf)
+	if err != nil {
+		return err
+	}
+	bytes := buf.Bytes()
+	log.Debug().Msgf("Assembled raw unsigned transaction %s", hex.EncodeToString(bytes))
+
 	// we need to sign each input individually
 	for i := range tx.TxIn {
+		log.Debug().Msgf("Sig hashes: %+v", sigHashes)
+
 		txHash, err := txscript.CalcTaprootSignatureHash(sigHashes, txscript.SigHashDefault, tx, i, prevOutputFetcher)
 		if err != nil {
 			return err
