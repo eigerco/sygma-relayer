@@ -142,6 +142,17 @@ func Run() error {
 	frostKeyshareStore := keyshare.NewFrostKeyshareStore(configuration.RelayerConfig.MpcConfig.FrostKeysharePath)
 	propStore := propStore.NewPropStore(db)
 
+	keyshare, err := frostKeyshareStore.GetKeyshare()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(keyshare.Threshold)
+	fmt.Println(keyshare.Key.ID)
+	fmt.Println(keyshare.Key.ChainKey)
+	for _, peer := range keyshare.Peers {
+		fmt.Println(peer)
+	}
+
 	// wait until executions are done and then stop further executions before exiting
 	exitLock := &sync.RWMutex{}
 	defer exitLock.Lock()
