@@ -319,7 +319,7 @@ func (e *Executor) fee(numOfInputs, numOfOutputs uint64) (uint64, error) {
 
 	log.Debug().Msgf("Fee: %+v", recommendedFee)
 	log.Debug().Msgf("Economy: %d", recommendedFee.EconomyFee)
-	return (numOfInputs*INPUT_SIZE + numOfOutputs*OUTPUT_SIZE) * ((recommendedFee.EconomyFee / FEE_ROUNDING_FACTOR) * FEE_ROUNDING_FACTOR), nil
+	return (numOfInputs*INPUT_SIZE + numOfOutputs*OUTPUT_SIZE) * ((recommendedFee.EconomyFee/FEE_ROUNDING_FACTOR)*FEE_ROUNDING_FACTOR + FEE_ROUNDING_FACTOR), nil
 }
 
 func (e *Executor) sendTx(tx *wire.MsgTx, signatures []taproot.Signature) (*chainhash.Hash, error) {
