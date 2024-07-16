@@ -161,8 +161,7 @@ func (e *Executor) executeResourceProps(props []*BtcTransferProposal, resource c
 
 	// we need to sign each input individually
 	for i := range tx.TxIn {
-		log.Debug().Msgf("Sig hashes: %+v", sigHashes)
-
+		sessionID := fmt.Sprintf("%s-%d", sessionID, i)
 		txHash, err := txscript.CalcTaprootSignatureHash(sigHashes, txscript.SigHashDefault, tx, i, prevOutputFetcher)
 		if err != nil {
 			return err
@@ -178,7 +177,7 @@ func (e *Executor) executeResourceProps(props []*BtcTransferProposal, resource c
 				msg,
 				resource.Tweak,
 				messageID,
-				fmt.Sprintf("%s-%d", sessionID, i),
+				sessionID,
 				e.host,
 				e.comm,
 				e.fetcher)
