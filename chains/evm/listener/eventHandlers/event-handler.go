@@ -381,15 +381,18 @@ func (eh *RefreshEventHandler) HandleEvents(
 		"Resolved refresh message in block range: %s-%s", startBlock.String(), endBlock.String(),
 	)
 
-	resharing := resharing.NewResharing(
-		eh.sessionID(startBlock), topology.Threshold, eh.host, eh.communication, eh.ecdsaStorer,
-	)
-	err = eh.coordinator.Execute(context.Background(), []tss.TssProcess{resharing}, make(chan interface{}, 1))
-	if err != nil {
-		log.Err(err).Msgf("Failed executing ecdsa key refresh")
-		return nil
-	}
-	frostResharing := frostResharing.NewResharing(
+	/*
+		resharing := resharing.NewResharing(
+			eh.sessionID(startBlock), topology.Threshold, eh.host, eh.communication, eh.ecdsaStorer,
+		)
+		err = eh.coordinator.Execute(context.Background(), []tss.TssProcess{resharing}, make(chan interface{}, 1))
+		if err != nil {
+			log.Err(err).Msgf("Failed executing ecdsa key refresh")
+			return nil
+		}
+
+	*/
+	frostResharing := frostKeygen.NewKeygen(
 		eh.sessionID(startBlock), topology.Threshold, eh.host, eh.communication, eh.frostStorer,
 	)
 	err = eh.coordinator.Execute(context.Background(), []tss.TssProcess{frostResharing}, make(chan interface{}, 1))
