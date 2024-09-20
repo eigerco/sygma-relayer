@@ -102,6 +102,7 @@ func (c *Coordinator) Execute(ctx context.Context, tssProcesses []TssProcess, re
 	log.Info().Str("SessionID", sessionID).Msgf("Starting process with coordinator %s", coordinator.String())
 
 	p.Go(func(ctx context.Context) error {
+		fmt.Println("AM I BEING CALLED TO START THE COORDINATION PROCESS")
 		err := c.start(ctx, tssProcesses, coordinator, resultChn, []peer.ID{})
 		if err == nil {
 			cancel()
@@ -204,8 +205,11 @@ func (c *Coordinator) watchExecution(ctx context.Context, tssProcess TssProcess,
 // start initiates listeners for coordinator and participants with static calculated coordinator
 func (c *Coordinator) start(ctx context.Context, tssProcesses []TssProcess, coordinator peer.ID, resultChn chan interface{}, excludedPeers []peer.ID) error {
 	if coordinator.String() == c.host.ID().String() {
+		fmt.Println("STARTING COORDINATION JOB")
+		defer fmt.Println("SUCCESSFULLY INITIATED COORDINATOR JOB")
 		return c.initiate(ctx, tssProcesses, resultChn, excludedPeers)
 	} else {
+		defer fmt.Println("SUCCESSFULLY AWAITED FOR START COORDINATOR JOB")
 		return c.waitForStart(ctx, tssProcesses, resultChn, coordinator, c.CoordinatorTimeout)
 	}
 }
@@ -245,6 +249,8 @@ func (c *Coordinator) initiate(ctx context.Context, tssProcesses []TssProcess, r
 	ticker := time.NewTicker(c.InitiatePeriod)
 	defer ticker.Stop()
 	c.broadcastInitiateMsg(tssProcess.SessionID())
+
+	fmt.Println("I AM UNDER INITIATION PROCESS -> ABOUT TO START LISTENING FOR CHAN CHANGES")
 	for {
 		select {
 		case wMsg := <-readyChan:

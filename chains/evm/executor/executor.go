@@ -6,6 +6,7 @@ package executor
 import (
 	"context"
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"math/big"
 	"sync"
 	"time"
@@ -117,6 +118,7 @@ func (e *Executor) Execute(proposals []*proposal.Proposal) error {
 			watchContext, cancelWatch := context.WithCancel(context.Background())
 			ep := pool.New().WithErrors()
 			ep.Go(func() error {
+				fmt.Println("AM I BEING CALLED TO EXECUTE COORDINATOR?>!")
 				err := e.coordinator.Execute(executionContext, []tss.TssProcess{signing}, sigChn)
 				if err != nil {
 					cancelWatch()
@@ -237,6 +239,8 @@ func (e *Executor) executeBatch(batch *Batch, signatureData *common.SignatureDat
 	sig = append(sig[:], ethCommon.LeftPadBytes(signatureData.S, 32)...)
 	sig = append(sig[:], signatureData.SignatureRecovery...)
 	sig[len(sig)-1] += 27 // Transform V from 0/1 to 27/28
+
+	spew.Dump(batch)
 
 	hash, err := e.bridge.ExecuteProposals(batch.proposals, sig, transactor.TransactOptions{
 		GasLimit: batch.gasLimit,

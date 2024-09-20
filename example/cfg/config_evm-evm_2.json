@@ -104,7 +104,7 @@
       "endpoint": "bitcoin:18443",
       "mempoolUrl": "http://mempool-stub:8882",
       "blockConfirmations": 1,
-      "address": "bcrt1pdf5c3q35ssem2l25n435fa69qr7dzwkc6gsqehuflr3euh905l2sjyr5ek",
+      "address": "mkHS9ne12qx9pS9VojpwU5xtRd4T7X7ZUt",
       "network": "regtest",
       "username": "user",
       "password": "password",

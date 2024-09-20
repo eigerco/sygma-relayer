@@ -155,6 +155,7 @@ func Run() error {
 			log.Error().Msgf("Error shutting down meter provider: %v", err)
 		}
 	}()
+
 	sygmaMetrics, err := metrics.NewSygmaMetrics(mp.Meter("relayer-metric-provider"), configuration.RelayerConfig.Env, configuration.RelayerConfig.Id)
 	if err != nil {
 		panic(err)
@@ -294,12 +295,12 @@ func Run() error {
 					}
 					startBlock = head
 				}
+
 				startBlock, err = chains.CalculateStartingBlock(startBlock, config.BlockInterval)
 				if err != nil {
 					panic(err)
 				}
 				substrateChain := coreSubstrate.NewSubstrateChain(substrateListener, mh, sExecutor, *config.GeneralChainConfig.Id, startBlock)
-
 				domains[*config.GeneralChainConfig.Id] = substrateChain
 			}
 		case "btc":
@@ -341,11 +342,11 @@ func Run() error {
 					mempool,
 					resources,
 					config.Network,
-					exitLock)
+					exitLock,
+				)
 
 				btcChain := btc.NewBtcChain(listener, executor, mh, *config.GeneralChainConfig.Id)
 				domains[*config.GeneralChainConfig.Id] = btcChain
-
 			}
 		default:
 			panic(fmt.Errorf("type '%s' not recognized", chainConfig["type"]))
@@ -358,11 +359,13 @@ func Run() error {
 	go r.Start(ctx, msgChan)
 
 	sysErr := make(chan os.Signal, 1)
+
 	signal.Notify(sysErr,
 		syscall.SIGTERM,
 		syscall.SIGINT,
 		syscall.SIGHUP,
-		syscall.SIGQUIT)
+		syscall.SIGQUIT,
+	)
 
 	relayerName := viper.GetString("name")
 	log.Info().Msgf("Started relayer: %s with PID: %s. Version: v%s", relayerName, host.ID().Pretty(), Version)
